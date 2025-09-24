@@ -13,36 +13,37 @@ function dump($var){
 
 //Función lógica presentación
 function getTableroMarkup($tableroData){
-    return '<div class="tile fuego"></div>
-        <div class="tile fuego"></div>
-        <div class="tile agua"></div>
-        <div class="tile fuego"></div>
-        <div class="tile fuego"></div>
-        <div class="tile tierra"></div>
-        <div class="tile fuego"></div>
-        <div class="tile fuego"></div>
-        <div class="tile agua"></div>
-        <div class="tile fuego"></div>
-        <div class="tile fuego"></div>
-        <div class="tile tierra"></div>
-        <div class="tile fuego"></div>
-        <div class="tile fuego"></div>
-        <div class="tile agua"></div>
-        <div class="tile fuego"></div>
-        <div class="tile fuego"></div>
-        <div class="tile tierra"></div>
-        <div class="tile fuego"></div>
-        <div class="tile fuego"></div>
-        <div class="tile agua"></div>
-        <div class="tile fuego"></div>
-        <div class="tile fuego"></div>
-        <div class="tile tierra"></div>';
+    $output = '';
+    
+    foreach($tableroData as $filaIndex => $datosFila){
+        foreach($datosFila as $columnaIndex => $tileType){
+            $output .= '<div class="tile '.$tileType.'"></div>';
+        }
+        
+    }
+    return $output;
 }
 
 
 //Lógica de negocio
+//El tablero es un array bidimensional en el que cada fila contiene 12 palabras cuyos valores pueden ser:
+// agua
+// fuego
+// tierra
+// hierba
 $tablero = [
-
+    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
+    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
+    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','tierra' , 'fuego'],
+    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','hierba','fuego' , 'fuego','agua','tierra' , 'fuego'],
+    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
+    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
+    ['agua','fuego' , 'fuego','agua','fuego' , 'hierba','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
+    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
+    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
+    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
+    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
+    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
 ];
 
 //Lógica de presentación
@@ -83,6 +84,9 @@ $tableroMarkup = getTableroMArkup($tablero);
         }
         .agua{
             background-color:blue;
+        }
+        .hierba{
+            background-color:green;
         }
     </style>
 </head>
