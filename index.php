@@ -12,81 +12,87 @@ function dump($var){
 }
 
 //Función lógica presentación
-function getTableroMarkup($tableroData){
+function getTableroMarkup ($tablero){
     $output = '';
-    
-    foreach($tableroData as $filaIndex => $datosFila){
-        foreach($datosFila as $columnaIndex => $tileType){
-            $output .= '<div class="tile '.$tileType.'"></div>';
+    //dump($tablero);
+    foreach ($tablero as $filaIndex => $datosFila) {
+        foreach ($datosFila as $columnaIndex => $tileType) {
+            //dump($tileType);
+            $output .= '<div class = "tile ' . $tileType . '"></div>';
         }
-        
     }
+
     return $output;
+
 }
-
-
 //Lógica de negocio
 //El tablero es un array bidimensional en el que cada fila contiene 12 palabras cuyos valores pueden ser:
 // agua
-// fuego
-// tierra
+//fuego
+//tierra
 // hierba
-$tablero = [
-    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
-    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
-    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','tierra' , 'fuego'],
-    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','hierba','fuego' , 'fuego','agua','tierra' , 'fuego'],
-    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
-    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
-    ['agua','fuego' , 'fuego','agua','fuego' , 'hierba','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
-    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
-    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
-    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
-    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
-    ['agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego','agua','fuego' , 'fuego'],
-];
+function leerArchivoCSV($rutaArchivoCSV) {
+    $tablero = [];
+
+    if (($puntero = fopen($rutaArchivoCSV, "r")) !== FALSE) {
+        while (($datosFila = fgetcsv($puntero)) !== FALSE) {
+            $tablero[] = $datosFila;
+        }
+        fclose($puntero);
+    }
+
+    return $tablero;
+}
+
+$tablero = leerArchivoCSV('./data/tablero1.csv');
 
 //Lógica de presentación
-$tableroMarkup = getTableroMArkup($tablero);
+$tableroMarkup = getTableroMarkup($tablero);
 
 
 ?>
-
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
     <!-- Minified version -->
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <title>Document</title>
     <style>
-        .contenedorTablero{
-            width:604px;
-            height: 604px;
-            border-radius: 5px;
+        .contenedorTablero {
+            width:600px;
+            height:600px;
             border: solid 2px grey;
             box-shadow: grey;
+            display:grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: repeat(12, 1fr);
         }
-        .tile{
-            width: 50px;
-            height: 50px;
-            float:left;
-            margin:0;
-            padding:0;
-            border-width:0;
+        .tile {
+            float: left;
+            margin: 0;
+            padding: 0;
+            border-width: 0;
+            background-image: url("./src/464.jpg");
+            background-size: 209px;
+            background-repeat: none;
         }
-        .fuego{
-            background-color:red;
+        .fuego {
+            background-color: red;
+            background-position: -105px -52px;
         }
-        .tierra{
-            background-color:brown;
+        .tierra {
+            background-color: brown;
+            background-position: -157px 0px;
         }
-        .agua{
-            background-color:blue;
+        .agua {
+            background-color: blue;
+            background-position: -53px 0px;
         }
-        .hierba{
-            background-color:green;
+        .hierba {
+            background-color: green;
+            background-position: 0px 0px;
         }
     </style>
 </head>
