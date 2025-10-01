@@ -1,31 +1,32 @@
 <?php
 
-/* Inicialización del entorno */
+/***** Inicialización del entorno ******/
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+
 /* Zona de declaración de funciones */
-//Funciones de debugueo
+//*******Funciones de debugueo****
 function dump($var){
     echo '<pre>'.print_r($var,1).'</pre>';
 }
 
-//Función lógica presentación
-function getTableroMarkup ($tablero){
+//*******Función lógica presentación**********+
+function getTableroMarkup ($tablero, $posPersonaje){
     $output = '';
-    //dump($tablero);
     foreach ($tablero as $filaIndex => $datosFila) {
         foreach ($datosFila as $columnaIndex => $tileType) {
-            //dump($tileType);
-            $output .= '<div class = "tile ' . $tileType . '"></div>';
+            if(isset($posPersonaje)&&($filaIndex == $posPersonaje['row'])&&($columnaIndex == $posPersonaje['col'])){
+                $output .= '<div class = "tile ' . $tileType . '"><img src="./src/super_musculitos.png"></div>';    
+            }else{
+                $output .= '<div class = "tile ' . $tileType . '"></div>';
+            }
         }
     }
-
     return $output;
-
 }
-//Lógica de negocio
+//******+Función Lógica de negocio************
 //El tablero es un array bidimensional en el que cada fila contiene 12 palabras cuyos valores pueden ser:
 // agua
 //fuego
@@ -43,11 +44,30 @@ function leerArchivoCSV($rutaArchivoCSV) {
 
     return $tablero;
 }
+function leerInput(){
+    
+    $col = filter_input(INPUT_GET, 'col', FILTER_VALIDATE_INT);
+    $row = filter_input(INPUT_GET, 'row', FILTER_VALIDATE_INT);
 
+    return (isset($col) && isset($row))? array(
+            'row' => $row,
+            'col' => $col
+        ) : null;    
+}
+//*****Lógica de negocio***********
+//Extracción de las variables de la petición
+
+
+$posPersonaje = leerInput();
+
+dump('$posPersonaje');
+dump($posPersonaje);
 $tablero = leerArchivoCSV('./data/tablero1.csv');
 
-//Lógica de presentación
-$tableroMarkup = getTableroMarkup($tablero);
+
+
+//*****+++Lógica de presentación*******
+$tableroMarkup = getTableroMarkup($tablero, $posPersonaje);
 
 
 ?>
@@ -77,6 +97,10 @@ $tableroMarkup = getTableroMarkup($tablero);
             background-image: url("./src/464.jpg");
             background-size: 209px;
             background-repeat: none;
+            overflow: hidden;
+        }
+        .tile img{
+            max-width:100%;
         }
         .fuego {
             background-color: red;
