@@ -26,6 +26,14 @@ function getTableroMarkup ($tablero, $posPersonaje){
     }
     return $output;
 }
+function getMensajesMarkup($arrayMensajes){
+    $output = '';
+    foreach ($arrayMensajes as $mensaje){
+        $output .= '<p>'.$mensaje.'</p>';
+    }
+    return $output;
+    
+}
 //******+Función Lógica de negocio************
 //El tablero es un array bidimensional en el que cada fila contiene 12 palabras cuyos valores pueden ser:
 // agua
@@ -49,26 +57,31 @@ function leerInput(){
     $col = filter_input(INPUT_GET, 'col', FILTER_VALIDATE_INT);
     $row = filter_input(INPUT_GET, 'row', FILTER_VALIDATE_INT);
 
-    return (isset($col) && isset($row))? array(
+    return (isset($col) && is_int($col) && isset($row) && is_int($row))? array(
             'row' => $row,
             'col' => $col
-        ) : null;    
+        ) : null;
 }
+
+function getMensajes($posPersonaje){
+    if(!isset($posPersonaje)){
+        return array('La posición del personaje no está bien definida');
+    }
+    return array('');
+
+}
+
 //*****Lógica de negocio***********
 //Extracción de las variables de la petición
 
-
 $posPersonaje = leerInput();
-
-dump('$posPersonaje');
-dump($posPersonaje);
 $tablero = leerArchivoCSV('./data/tablero1.csv');
-
+$mensajes =  getMensajes($posPersonaje);
 
 
 //*****+++Lógica de presentación*******
 $tableroMarkup = getTableroMarkup($tablero, $posPersonaje);
-
+$mensajesUsuarioMarkup = getMensajesMarkup($mensajes);
 
 ?>
 <!DOCTYPE html>
@@ -122,8 +135,10 @@ $tableroMarkup = getTableroMarkup($tablero, $posPersonaje);
 </head>
 <body>
     <h1>Tablero juego super rol DWES</h1>
+    <div class="mesajesContainer"><?php echo $mensajesUsuarioMarkup; ?></div>
     <div class="contenedorTablero">
         <?php echo $tableroMarkup; ?>
     </div>
+    
 </body>
 </html>
