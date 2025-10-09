@@ -29,17 +29,21 @@ function getMensajesMarkup($arrayMensajes){
     return $output;
     
 }
-function getArrowsMarkup($arrows){
+function getFormMarkup($posPersonaje){
     
-    $output = '';
-    if(isset($arrows)){
-        foreach($arrows as $sentido => $arrayPos){
-            $output .= '<a href="./index.php?col='.$arrayPos['col'].'&row='.$arrayPos['row'].'">'.$sentido.'</a> ';
-        }
+    $output = '<form action="'.$_SERVER['PHP_SELF'].'" method="post">
+        <input type="submit" name="direccion" value="arriba">
+        <input type="submit" name="direccion" value="izquierda">
+        <input type="submit" name="direccion" value="derecha">
+        <input type="submit" name="direccion" value="abajo">';
+    if(isset($posPersonaje)){
+        $output .= '<input type="hidden" name="pos_personaje" value="'.serialize($posPersonaje).'">';
+        //$output .= '<input type="hidden" name="col" value="'.$posPersonaje['col'].'">
+        //<input type="hidden" name="row" value="'.$posPersonaje['row'].'">';
     }
+    $output.='</form>';
     
-    return $output;
-    
+    return $output;   
 }
 
 
@@ -62,22 +66,48 @@ function leerArchivoCSV($rutaArchivoCSV) {
     return $tablero;
 }
 
-function procesaRedirect(){
+/*function procesaRedirect(){
     if((!isset($_GET['col']))&&(!isset($_GET['row']))){
         header("HTTP/1.1 308 Permanent Redirect");
         header('Location: ./index.php?row=0&col=0');
     }
-}
+}*/
 
-function leerInput(){
+function procesarInput(){
     
-    $col = filter_input(INPUT_GET, 'col', FILTER_VALIDATE_INT);
-    $row = filter_input(INPUT_GET, 'row', FILTER_VALIDATE_INT);
 
-    return (isset($col) && is_int($col) && isset($row) && is_int($row))? array(
+    $col = filter_input(INPUT_POST, 'pos_personaje', FILTER_DEFAULT);
+    //VOY POR AQUÍ
+
+    $col = filter_input(INPUT_POST, 'col', FILTER_VALIDATE_INT);
+    $row = filter_input(INPUT_POST, 'row', FILTER_VALIDATE_INT);
+
+    $direccion = filter_input(INPUT_POST, 'direccion', FILTER_DEFAULT);
+    $posPersonaje= (isset($col) && is_int($col) && isset($row) && is_int($row))? array(
             'row' => $row,
             'col' => $col
-        ) : null;
+        ) : array(
+            'row' => 0,
+            'col' => 0,
+        );
+    if(isset($direccion)){
+        switch($direccion){
+            case 'arriba':
+                $posPersonaje['row']--;
+            break;
+            case 'abajo':
+                $posPersonaje['row']++;
+            break;
+            case 'derecha':
+                $posPersonaje['col']++;
+            break;
+            case 'izquierda':
+                $posPersonaje['col']--;
+            break;
+        }
+    }
+    return $posPersonaje;
+    
 }
 
 function getMensajes(&$posPersonaje){
@@ -87,7 +117,7 @@ function getMensajes(&$posPersonaje){
     return array('');
 }
 
-function getArrows($posPersonaje){
+/*function getArrows($posPersonaje){
     if(isset($posPersonaje)){
 
         $arrows = array(
@@ -112,5 +142,5 @@ function getArrows($posPersonaje){
     }
     return null;
 
-}
+}*/
 
