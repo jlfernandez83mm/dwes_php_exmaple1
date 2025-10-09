@@ -61,6 +61,14 @@ function leerArchivoCSV($rutaArchivoCSV) {
 
     return $tablero;
 }
+
+function procesaRedirect(){
+    if((!isset($_GET['col']))&&(!isset($_GET['row']))){
+        header("HTTP/1.1 308 Permanent Redirect");
+        header('Location: ./index.php?row=0&col=0');
+    }
+}
+
 function leerInput(){
     
     $col = filter_input(INPUT_GET, 'col', FILTER_VALIDATE_INT);

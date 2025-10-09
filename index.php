@@ -7,13 +7,15 @@ error_reporting(E_ALL);
 
 include('./lib/funciones.php');
 
+/***** Lógica de negocio ******/
+procesaRedirect();
 $posPersonaje = leerInput();
 $arrows = getArrows($posPersonaje);
 $tablero = leerArchivoCSV('./data/tablero1.csv');
 $mensajes =  getMensajes($posPersonaje);
 
 
-//*****+++Lógica de presentación*******
+//*****Lógica de presentación*******
 $tableroMarkup = getTableroMarkup($tablero, $posPersonaje);
 $mensajesUsuarioMarkup = getMensajesMarkup($mensajes);
 $arrowsMarkup = getArrowsMarkup($arrows);
