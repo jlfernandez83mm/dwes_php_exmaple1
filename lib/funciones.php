@@ -2,8 +2,6 @@
 /* Zona de declaración de funciones */
 //*******Funciones de debugueo****
 function dump($var){
-    global $miVariable;
-    echo $miVariable;
     echo '<pre>'.print_r($var,1).'</pre>';
 }
 
@@ -37,7 +35,7 @@ function getFormMarkup($posPersonaje){
         <input type="submit" name="direccion" value="derecha">
         <input type="submit" name="direccion" value="abajo">';
     if(isset($posPersonaje)){
-        $output .= '<input type="hidden" name="pos_personaje" value="'.serialize($posPersonaje).'">';
+        $output .= '<input type="hidden" name="pos_personaje" value="'.base64_encode(serialize($posPersonaje)).'">';
         //$output .= '<input type="hidden" name="col" value="'.$posPersonaje['col'].'">
         //<input type="hidden" name="row" value="'.$posPersonaje['row'].'">';
     }
@@ -75,39 +73,38 @@ function leerArchivoCSV($rutaArchivoCSV) {
 
 function procesarInput(){
     
+    $posActual = filter_input(INPUT_POST, 'pos_personaje', FILTER_DEFAULT);
+    
+    
+    $posActual = isset($posActual)?unserialize(base64_decode($posActual)):array(
+        'row' => 0,
+        'col' => 0,
+    );
+    
+    $col = $posActual['col'];
+    $row = $posActual['row'];
 
-    $col = filter_input(INPUT_POST, 'pos_personaje', FILTER_DEFAULT);
-    //VOY POR AQUÍ
-
-    $col = filter_input(INPUT_POST, 'col', FILTER_VALIDATE_INT);
-    $row = filter_input(INPUT_POST, 'row', FILTER_VALIDATE_INT);
+    
 
     $direccion = filter_input(INPUT_POST, 'direccion', FILTER_DEFAULT);
-    $posPersonaje= (isset($col) && is_int($col) && isset($row) && is_int($row))? array(
-            'row' => $row,
-            'col' => $col
-        ) : array(
-            'row' => 0,
-            'col' => 0,
-        );
+    
     if(isset($direccion)){
         switch($direccion){
             case 'arriba':
-                $posPersonaje['row']--;
+                $posActual['row']--;
             break;
             case 'abajo':
-                $posPersonaje['row']++;
+                $posActual['row']++;
             break;
             case 'derecha':
-                $posPersonaje['col']++;
-            break;
-            case 'izquierda':
-                $posPersonaje['col']--;
-            break;
+                $posActual['col']++;
+           break;
+           case 'izquierda':
+                $posActual['col']--;
+            break;    
         }
     }
-    return $posPersonaje;
-    
+    return $posActual;
 }
 
 function getMensajes(&$posPersonaje){
